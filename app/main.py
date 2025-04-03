@@ -1,5 +1,5 @@
 import os
-import uopg2
+import psycopg2
 from flask import Flask
 
 # Create the Flask App
