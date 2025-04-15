@@ -10,38 +10,52 @@ app = Flask(__name__)
 def index():
     return "The API is working"
 
-#Create the data route
-@app.route("/table-name", methods=["GET"])
-def table_name():
+# Create General DB to GeoJSON Function
+def database_to_geojson(table_name):
     # connect to database
     conn = psycopg2.connect(
-        host = os.environ.get("DB_HOST")
-        database = os.environ.get("DB_NAME")
-        user = os.environ.get("DB_USER")
-        password = os.environ.get("DB_PASS")
-        port = os.environ.get("DB_PORT")
+        host=os.environ.get("DB_HOST")
+    database = os.environ.get("DB_NAME")
+    user = os.environ.get("DB_USER")
+    password = os.environ.get("DB_PASS")
+    port = os.environ.get("DB_PORT")
     )
+
     # retrieve the data
     with conn.cursor() as cur:
-        query = """
-        SELECT JSON_BUILD_OBJECT(
-            'type', 'FeatureCollection',
-            'features', JSON_AGG(
-                ST_AsGeoJSON(table_name.*)::json
+        query = f"""
+            SELECT JSON_BUILD_OBJECT(
+                'type', 'FeatureCollection',
+                'features', JSON_AGG(
+                    ST_AsGeoJSON({table_name}.*)::json
+                )
             )
-        )
-        FROM table_name:
-        """
+            FROM {table_name}:
+            """
         cur.execute(query)
 
-
-        data = cur.fetchall()
-
+    data = cur.fetchall()
     # close the connection
     conn.close()
 
     # return the data
     return data[0][0]
+
+#Create the data route
+@app.route("/dem_points", methods=["GET"])
+def dem_points():
+    # Call our general function
+    dem = database_to_geojson("dem_points")
+
+    return dem
+
+# Create the data route
+@app.route("/cdd_data", methods=["GET"])
+def cdd_data():
+    # Call our general function
+    cdd_data = database_to_geojson("cdd_data")
+
+    return cdd_data
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
