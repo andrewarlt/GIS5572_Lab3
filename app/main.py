@@ -45,7 +45,7 @@ def database_to_geojson(table_name):
 @app.route("/lab0", methods=["GET"])
 def dem_points():
     # Call our general function
-    dem = database_to_geojson("dem_points")
+    dem = database_to_geojson("galayer_dem")
 
     return dem
 
@@ -53,7 +53,7 @@ def dem_points():
 @app.route("/lab0", methods=["GET"])
 def cdd_data():
     # Call our general function
-    cdd_data = database_to_geojson("cdd_data")
+    cdd_data = database_to_geojson("galayer_cdd")
 
     return cdd_data
 
