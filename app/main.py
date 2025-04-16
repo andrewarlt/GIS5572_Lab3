@@ -14,11 +14,11 @@ def index():
 def database_to_geojson(table_name):
     # connect to database
     conn = psycopg2.connect(
-        host=os.environ.get("DB_HOST")
-    database = os.environ.get("DB_NAME")
-    user = os.environ.get("DB_USER")
-    password = os.environ.get("DB_PASS")
-    port = os.environ.get("DB_PORT")
+        host=os.environ.get("DB_HOST"),
+        database = os.environ.get("DB_NAME"),
+        user = os.environ.get("DB_USER"),
+        password = os.environ.get("DB_PASS"),
+        port = os.environ.get("DB_PORT")
     )
 
     # retrieve the data
@@ -30,7 +30,7 @@ def database_to_geojson(table_name):
                     ST_AsGeoJSON({table_name}.*)::json
                 )
             )
-            FROM {table_name}:
+            FROM {table_name};
             """
         cur.execute(query)
 
@@ -42,7 +42,7 @@ def database_to_geojson(table_name):
     return data[0][0]
 
 #Create the data route
-@app.route("/dem_points", methods=["GET"])
+@app.route("/lab0", methods=["GET"])
 def dem_points():
     # Call our general function
     dem = database_to_geojson("dem_points")
@@ -50,7 +50,7 @@ def dem_points():
     return dem
 
 # Create the data route
-@app.route("/cdd_data", methods=["GET"])
+@app.route("/lab0", methods=["GET"])
 def cdd_data():
     # Call our general function
     cdd_data = database_to_geojson("cdd_data")
