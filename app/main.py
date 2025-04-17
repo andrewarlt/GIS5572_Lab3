@@ -34,7 +34,7 @@ def database_to_geojson(table_name):
             """
         cur.execute(query)
 
-    data = cur.fetchall()
+        data = cur.fetchall()
     # close the connection
     conn.close()
 
