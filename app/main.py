@@ -53,15 +53,23 @@ def dem_points():
 @app.route("/dem_error", methods=["GET"])
 def dem_error():
     # Call our general function
-    dem = database_to_geojson("galayer_dem")
+    dem_error = database_to_geojson("galayer_dem")
 
-    return dem
+    return dem_error
 
 # Create the data route
 @app.route("/cdd", methods=["GET"])
-def cdd_data():
+def cdd():
     # Call our general function
-    cdd_data = database_to_geojson("galayer_cdd")
+    cdd_data = database_to_geojson("cdd_points")
+
+    return cdd_data
+
+# Create the data route
+@app.route("/cdd_error", methods=["GET"])
+def cdd_error():
+    # Call our general function
+    cdd_error = database_to_geojson("galayer_cdd")
 
     return cdd_data
 
