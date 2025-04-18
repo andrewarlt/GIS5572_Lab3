@@ -45,7 +45,7 @@ def database_to_geojson(table_name):
 @app.route("/dem", methods=["GET"])
 def dem_points():
     # Call our general function
-    dem = database_to_geojson("galayer_dem")
+    dem = database_to_geojson("dem_points")
 
     return dem
 
@@ -64,50 +64,6 @@ def cdd_data():
     cdd_data = database_to_geojson("galayer_cdd")
 
     return cdd_data
-
-# Build JSON for cdd error
-@app.route("/cdd_error", methods=["GET"])
-def cdd_error():
-    # Connect to the database
-    conn = psycopg2.connect(
-        host=os.environ.get("DB_HOST"),
-        database=os.environ.get("DB_NAME"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASS"),
-        port=os.environ.get("DB_PORT")
-    )
-
-    cursor = conn.cursor()
-
-    # Query only the 'Standard Error' column and geometry
-    query = """
-        SELECT "Standard Error", ST_AsGeoJSON(geom) 
-        FROM galayer_cdd
-        WHERE "Standard Error" IS NOT NULL;
-    """
-    cursor.execute(query)
-    rows = cursor.fetchall()
-
-    # Build GeoJSON features
-    features = []
-    for value, geom_json in rows:
-        features.append({
-            "type": "Feature",
-            "geometry": json.loads(geom_json),
-            "properties": {
-                "Standard Error": value
-            }
-        })
-
-    geojson = {
-        "type": "FeatureCollection",
-        "features": features
-    }
-
-    cursor.close()
-    conn.close()
-
-    return jsonify(geojson)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
