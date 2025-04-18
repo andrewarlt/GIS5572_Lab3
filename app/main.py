@@ -71,7 +71,7 @@ def cdd_error():
     # Call our general function
     cdd_error = database_to_geojson("galayer_cdd")
 
-    return cdd_data
+    return cdd_error
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
